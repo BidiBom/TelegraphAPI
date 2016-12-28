@@ -40,11 +40,11 @@
 
         public function getProperties()
         {
-            $property = [];
+            $properties = [];
             foreach ($this as $propertyName => $propertyValue) {
-                $property[$propertyName] = $propertyValue;
+                $properties[$propertyName] = $propertyValue;
             }
-            return $property;
+            return $properties;
         }
 
         private function setPropertiesOfResponse($response)
