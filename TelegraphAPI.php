@@ -13,6 +13,16 @@
     {
         private $host_api = "https://api.telegra.ph";
 
+        public function __construct(array $properties = [])
+        {
+            if (!empty($properties)) {
+                foreach ($properties as $key => $value) {
+                    $this->setProperty($key, $value);
+                }
+            }
+
+        }
+
         function connect()
         {
             $client = new Client([
@@ -28,6 +38,36 @@
         public function getHostApi()
         {
             return $this->host_api;
+        }
+
+        public function setProperty($key, $value)
+        {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
+
+        public function getProperties()
+        {
+            $properties = [];
+            foreach ($this as $propertyName => $propertyValue) {
+                $properties[$propertyName] = $propertyValue;
+            }
+            return $properties;
+        }
+
+        protected function setPropertiesOfResponse($response)
+        {
+            if ($response->ok == true) {
+                foreach ($response->result as $key => $value) {
+                    $this->setProperty($key, $value);
+                }
+
+                return true;
+
+            } else {
+                throw new \Exception('Error request: '.$response->error);
+            }
         }
 
         /**

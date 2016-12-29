@@ -18,49 +18,6 @@
         private $auth_url;
         private $page_count;
 
-        /**
-         * TelegraphAccount constructor.
-         */
-        public function __construct($properties = [])
-        {
-            if (!empty($properties)) {
-                foreach ($properties as $key => $value) {
-                    $this->setProperty($key, $value);
-                }
-            }
-
-        }
-
-        public function setProperty($key, $value)
-        {
-            if (property_exists($this, $key)) {
-                $this->$key = $value;
-            }
-        }
-
-        public function getProperties()
-        {
-            $properties = [];
-            foreach ($this as $propertyName => $propertyValue) {
-                $properties[$propertyName] = $propertyValue;
-            }
-            return $properties;
-        }
-
-        private function setPropertiesOfResponse($response)
-        {
-            if ($response->ok == true) {
-                foreach ($response->result as $key => $value) {
-                    $this->setProperty($key, $value);
-                }
-
-                return true;
-
-            } else {
-                throw new \Exception('Error request: '.$response->error);
-            }
-        }
-
         public function createAccount($short_name, $author_name = '', $author_url = '')
         {
             $method_name = 'createAccount';
@@ -100,6 +57,19 @@
             $params = [
                 "access_token"  => $this->getAccessToken(),
                 "fields" => $strArrayFields
+            ];
+
+            $response = $this->requestMethod($method_name, $params);
+
+            return $this->setPropertiesOfResponse($response);
+        }
+
+        public function revokeAccessToken()
+        {
+            $method_name = "revokeAccessToken";
+
+            $params = [
+                "access_token" => $this->getAccessToken()
             ];
 
             $response = $this->requestMethod($method_name, $params);
